@@ -1,0 +1,49 @@
+name: "MLGuard Check"
+description: "Pre-deployment safety checks for ML models"
+inputs:
+  model-path:
+    description: "Path to the model file (.pkl, .joblib, .pt)"
+    required: true
+  reference-data:
+    description: "Path to reference dataset CSV"
+    required: true
+  current-data:
+    description: "Path to current dataset CSV"
+    required: true
+  baseline-path:
+    description: "Path to baseline metrics JSON"
+    required: false
+    default: "./mlguard_baseline.json"
+  target-column:
+    description: "Name of target column"
+    required: false
+    default: "target"
+  task-type:
+    description: "classification or regression"
+    required: false
+    default: "classification"
+runs:
+  using: "composite"
+  steps:
+    - name: Install mlguard
+      run: pip install mlguard
+      shell: bash
+
+    - name: Run checks
+      run: |
+        mlguard check \
+          --model "${{ inputs.model-path }}" \
+          --ref "${{ inputs.reference-data }}" \
+          --current "${{ inputs.current-data }}" \
+          --baseline-path "${{ inputs.baseline-path }}" \
+          --target "${{ inputs.target-column }}" \
+          --task "${{ inputs.task-type }}" \
+          --output ./mlguard_report.md
+      shell: bash
+
+    - name: Upload report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: mlguard-report
+        path: ./mlguard_report.md
