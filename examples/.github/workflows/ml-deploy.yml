@@ -1,0 +1,22 @@
+name: ML Deploy Gate
+
+on:
+  pull_request:
+    paths:
+      - "models/**"
+      - "data/**"
+
+jobs:
+  mlguard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: kxgst228/mlguard/action@main
+        with:
+          model-path: ./models/model.pkl
+          reference-data: ./data/reference.csv
+          current-data: ./data/current.csv
+          baseline-path: ./mlguard_baseline.json
+          target-column: target
+          task-type: classification
