@@ -36,6 +36,9 @@ def check_latency(
     Uses single-sample predictions because that's the production pattern
     for most real-time serving. Batch latency is a different thing.
     """
+    if len(X) == 0:
+        raise ValueError("X is empty, need at least 1 sample for latency check")
+
     # warm up — first few calls are always slower (JIT, caching, etc)
     for _ in range(min(5, len(X))):
         model.predict(X[:1])
