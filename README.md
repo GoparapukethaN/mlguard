@@ -1,18 +1,21 @@
-# mlguard
+# MLGuard
 
 Pre-deployment safety checks for ML models. Three checks, one command, pass or fail.
 
 ## Why
 
-I built this after a model degradation incident went unnoticed for 3 days in production. We had monitoring dashboards but nobody checked them before deploying a retrained model. What we needed was a gate — something that blocks the deploy if the model got worse.
+Monitoring is useful after a model is live, but release decisions need checks before a
+new model reaches production. This project is a small release gate for that moment: it
+compares a candidate model and current data against a known baseline, then returns a
+clear pass, warn, or fail verdict.
 
-This is that gate. It runs three checks before you deploy:
+It runs three checks:
 
 1. **Data drift** — are the input features still distributed the same way? (PSI)
 2. **Performance regression** — did accuracy/F1 drop compared to baseline?
 3. **Latency regression** — is inference slower than before?
 
-If any check fails, the deploy is blocked.
+If any check fails, the CLI exits non-zero so it can block a CI/CD pipeline.
 
 ## Quick start
 
@@ -42,13 +45,13 @@ mlguard — pre-deployment safety checks
     feature_4: PSI=0.2891 FAIL
 
   [2/3] Checking performance regression...
-    accuracy: 0.9533 → 0.8867 (-7.0%) WARN
-    f1: 0.9530 → 0.8840 (-7.2%) WARN
+    accuracy: 0.9467 → 0.7900 (-16.6%) FAIL
+    f1: 0.9467 → 0.7884 (-16.7%) FAIL
 
   [3/3] Checking inference latency...
-    p95=0.15ms (baseline=0.14ms, +7.1%) PASS
+    p95=1.65ms (baseline=1.97ms, -16.2%) PASS
 
-  FAIL — 3 feature(s) with significant drift
+  FAIL — 3 feature(s) with significant drift; performance regression detected
 
   Report saved to ./mlguard_report.md
 ```
@@ -105,6 +108,17 @@ The exit code blocks the pipeline on FAIL.
 pip install -e .
 python examples/sklearn_example.py
 ```
+
+## Verified Locally
+
+```bash
+ruff check .
+pytest
+python examples/sklearn_example.py
+```
+
+Current local verification: `ruff` clean, `17 passed`, and the sklearn example produces
+a failing release-gate report when drift and performance regression are simulated.
 
 ## Running tests
 

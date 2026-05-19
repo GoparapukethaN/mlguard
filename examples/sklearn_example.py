@@ -4,9 +4,8 @@ Run this to see mlguard in action:
     python examples/sklearn_example.py
 """
 
-import numpy as np
-import pandas as pd
 import joblib
+import pandas as pd
 from sklearn.datasets import make_classification
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
@@ -103,11 +102,11 @@ def main():
     print(f"   {verdict.summary}")
 
     # save report
-    report = generate_report(
+    generate_report(
         verdict, drift_results, regression_results,
         latency_result, "/tmp/mlguard_report.md"
     )
-    print(f"\n   Report saved to /tmp/mlguard_report.md")
+    print("\n   Report saved to /tmp/mlguard_report.md")
 
 
 if __name__ == "__main__":

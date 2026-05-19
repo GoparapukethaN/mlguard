@@ -80,21 +80,21 @@ def check_regression(
         if baseline_val is None:
             continue
 
-        # for error metrics (rmse), increase is bad. for accuracy/f1, decrease is bad.
+        # For error metrics (rmse), increase is bad. For accuracy/f1, decrease is bad.
+        # Keep the displayed percent intuitive: positive means the metric increased,
+        # negative means the metric decreased.
         if metric_name in ("rmse", "mse", "mae"):
-            # higher is worse
             if baseline_val > 0:
                 change_pct = ((current_val - baseline_val) / baseline_val) * 100
             else:
                 change_pct = 0.0
             is_worse = change_pct > 0
         else:
-            # higher is better
             if baseline_val > 0:
-                change_pct = ((baseline_val - current_val) / baseline_val) * 100
+                change_pct = ((current_val - baseline_val) / baseline_val) * 100
             else:
                 change_pct = 0.0
-            is_worse = change_pct > 0
+            is_worse = change_pct < 0
 
         if is_worse and abs(change_pct) >= fail_pct:
             status = "fail"

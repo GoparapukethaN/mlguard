@@ -37,6 +37,7 @@ class TestCheckRegression:
         # model accuracy is around 0.85, so 0.99 -> 0.85 is >10% drop
         has_fail = any(r.status == "fail" for r in results)
         assert has_fail
+        assert all(r.change_pct < 0 for r in results)
 
     def test_handles_missing_baseline_metric(self):
         model, X, y = self._make_model_and_data()
