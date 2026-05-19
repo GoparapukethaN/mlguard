@@ -112,9 +112,7 @@ python examples/sklearn_example.py
 ## Verified Locally
 
 ```bash
-ruff check .
-pytest
-python examples/sklearn_example.py
+make verify
 ```
 
 Current local verification: `ruff` clean, `17 passed`, and the sklearn example produces
