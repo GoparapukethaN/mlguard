@@ -118,6 +118,8 @@ make verify
 Current local verification: `ruff` clean, `17 passed`, and the sklearn example produces
 a failing release-gate report when drift and performance regression are simulated.
 
+Sample report: [docs/example-report.md](docs/example-report.md)
+
 ## Running tests
 
 ```bash
