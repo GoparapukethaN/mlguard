@@ -3,9 +3,9 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mlguard"
+name = "mlguard-release-gate"
 version = "0.1.0"
-description = "Pre-deployment checks for ML models. Catches data drift, performance regression, and latency issues before they reach production."
+description = "Local pre-deployment release checks for ML model drift, regression, and latency."
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"

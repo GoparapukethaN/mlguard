@@ -25,8 +25,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install mlguard
-      run: pip install mlguard
+    - name: Install MLGuard from this action checkout
+      run: pip install -e "${{ github.action_path }}/.."
       shell: bash
 
     - name: Run checks

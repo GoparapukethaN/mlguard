@@ -20,7 +20,9 @@ If any check fails, the CLI exits non-zero so it can block a CI/CD pipeline.
 ## Quick start
 
 ```bash
-pip install mlguard
+git clone https://github.com/GoparapukethaN/mlguard.git
+cd mlguard
+pip install -e .
 
 # create a baseline from your current model + data
 mlguard baseline --model model.pkl --data reference.csv --target label
@@ -91,7 +93,7 @@ Add to your deployment workflow:
 ```yaml
 - name: ML safety check
   run: |
-    pip install mlguard
+    pip install -e .
     mlguard check \
       --model ./model.pkl \
       --ref ./data/reference.csv \
@@ -129,7 +131,8 @@ pytest tests/ -v
 
 ## Limitations
 
-- Works with sklearn and PyTorch models (anything with `.predict()`)
+- Tested with sklearn-style estimators; other model wrappers can work if they expose
+  `.predict()`
 - PSI needs at least 10 samples per feature to be meaningful
 - Latency check measures single-sample prediction time, not batched
 - No GPU-specific latency profiling (CPU only for now)
