@@ -14,5 +14,14 @@ fi
 grep -q "VERDICT: FAIL" /tmp/mlguard-example.txt
 grep -q "performance regression detected" /tmp/mlguard-example.txt
 test -f /tmp/mlguard_report.md
+test -f /tmp/mlguard_report.json
+"$python_cmd" - <<'PY'
+import json
+from pathlib import Path
+
+payload = json.loads(Path("/tmp/mlguard_report.json").read_text(encoding="utf-8"))
+assert payload["verdict"]["overall"] == "FAIL"
+assert payload["summary"]["checks_failed"] >= 1
+PY
 
 echo "local verification passed"

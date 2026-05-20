@@ -1,6 +1,6 @@
 PYTHON ?= python3
 
-.PHONY: install lint test example verify
+.PHONY: install lint test example verify ci-local
 
 install:
 	$(PYTHON) -m pip install -e ".[dev]"
@@ -16,3 +16,5 @@ example:
 
 verify:
 	./scripts/verify-local.sh
+
+ci-local: verify

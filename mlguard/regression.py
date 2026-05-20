@@ -1,7 +1,7 @@
 """Performance regression check.
 
-Loads a model, runs predictions on a holdout set, and compares metrics
-against a saved baseline. Supports sklearn and pytorch models.
+Loads a trusted local model artifact with a ``predict`` method, runs predictions on a
+holdout set, and compares metrics against a saved baseline.
 """
 
 from __future__ import annotations
@@ -25,18 +25,17 @@ class RegressionResult:
 
 
 def load_model(model_path: str | Path):
-    """Load a model from disk. Tries joblib first, then pickle, then torch."""
+    """Load a trusted joblib/pickle-style model artifact from disk."""
     model_path = Path(model_path)
     suffix = model_path.suffix.lower()
 
     if suffix in (".pkl", ".joblib"):
         return joblib.load(model_path)
     elif suffix in (".pt", ".pth"):
-        try:
-            import torch
-            return torch.load(model_path, map_location="cpu", weights_only=False)
-        except ImportError:
-            raise ImportError("Install torch to load .pt/.pth models")
+        raise ValueError(
+            "PyTorch .pt/.pth model files are not supported yet. "
+            "Use a trusted sklearn-style artifact with .predict(), or add a tested adapter."
+        )
     else:
         # try joblib as default
         return joblib.load(model_path)

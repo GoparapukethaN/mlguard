@@ -36,6 +36,10 @@ def check(
         help="Output JSON report path. Defaults to the markdown path with .json suffix.",
     ),
     latency_runs: int = typer.Option(100, help="Number of inference calls for latency check"),
+    allow_missing_baseline: bool = typer.Option(
+        False,
+        help="Allow drift-only checks when the baseline file is missing.",
+    ),
 ):
     """Run all three checks: drift, regression, latency."""
     console.print("\n[bold]mlguard[/bold] — pre-deployment safety checks\n")
@@ -53,11 +57,11 @@ def check(
     try:
         bl = load_baseline(baseline_path)
         console.print(f"  Baseline: {baseline_path}")
-    except FileNotFoundError:
-        console.print(
-            f"  [yellow]No baseline found at {baseline_path}. "
-            "Run `mlguard baseline` first, or using defaults.[/yellow]"
-        )
+    except FileNotFoundError as exc:
+        if not allow_missing_baseline:
+            console.print(f"  [red]{exc}[/red]")
+            raise typer.Exit(2)
+        console.print(f"  [yellow]{exc} Running drift-only checks.[/yellow]")
         bl = {}
 
     # separate features and target

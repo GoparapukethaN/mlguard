@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: kxgst228/mlguard/action@main
+      - uses: GoparapukethaN/mlguard/action@main
         with:
           model-path: ./models/model.pkl
           reference-data: ./data/reference.csv

@@ -21,8 +21,8 @@ def decide(
 ) -> Verdict:
     """Simple worst-case aggregation. If anything fails, the whole thing fails.
 
-    I considered weighted scoring but honestly this is better — you don't want
-    to deploy a model with drifted features just because latency looks fine.
+    A release gate is clearer when drift, regression, and latency failures are not
+    averaged away into a blended score.
     """
     all_statuses = drift_statuses + regression_statuses + [latency_status]
 

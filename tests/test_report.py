@@ -58,3 +58,21 @@ def test_json_report_writes_machine_readable_release_gate(tmp_path: Path) -> Non
     assert payload["data_drift"][0]["feature"] == "feature_0"
     assert payload["performance_regression"][0]["metric"] == "accuracy"
     assert payload["latency"]["status"] == "pass"
+
+
+def test_json_report_includes_summary_counts() -> None:
+    verdict, drift, regression, latency = _sample_inputs()
+
+    payload = generate_json_report(verdict, drift, regression, latency)
+
+    assert payload["summary"] == {
+        "checks_total": 3,
+        "checks_failed": 1,
+        "checks_warned": 1,
+        "drift_features_failed": 1,
+        "drift_features_warned": 0,
+        "regression_metrics_failed": 0,
+        "regression_metrics_warned": 1,
+        "latency_failed": 0,
+        "latency_warned": 0,
+    }

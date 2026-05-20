@@ -33,9 +33,6 @@ dev = [
     "pytest>=7.4.0",
     "ruff>=0.1.0",
 ]
-torch = [
-    "torch>=2.0.0",
-]
 
 [project.scripts]
 mlguard = "mlguard.cli:app"

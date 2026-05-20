@@ -102,6 +102,7 @@ def generate_json_report(
             "regression_status": verdict.regression_status,
             "latency_status": verdict.latency_status,
         },
+        "summary": _summary_payload(drift_results, regression_results, latency_result),
         "data_drift": [
             {
                 "feature": result.feature,
@@ -127,6 +128,37 @@ def generate_json_report(
         Path(output_path).write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
     return payload
+
+
+def _summary_payload(
+    drift_results: list[DriftResult],
+    regression_results: list[RegressionResult],
+    latency_result: LatencyResult | None,
+) -> dict[str, int]:
+    drift_failed = sum(1 for result in drift_results if result.status == "fail")
+    drift_warned = sum(1 for result in drift_results if result.status == "warn")
+    regression_failed = sum(1 for result in regression_results if result.status == "fail")
+    regression_warned = sum(1 for result in regression_results if result.status == "warn")
+    latency_failed = int(latency_result is not None and latency_result.status == "fail")
+    latency_warned = int(latency_result is not None and latency_result.status == "warn")
+
+    checks_total = (
+        len(drift_results)
+        + len(regression_results)
+        + int(latency_result is not None)
+    )
+
+    return {
+        "checks_total": checks_total,
+        "checks_failed": drift_failed + regression_failed + latency_failed,
+        "checks_warned": drift_warned + regression_warned + latency_warned,
+        "drift_features_failed": drift_failed,
+        "drift_features_warned": drift_warned,
+        "regression_metrics_failed": regression_failed,
+        "regression_metrics_warned": regression_warned,
+        "latency_failed": latency_failed,
+        "latency_warned": latency_warned,
+    }
 
 
 def _latency_payload(result: LatencyResult | None) -> dict[str, float | str] | None:

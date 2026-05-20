@@ -3,7 +3,7 @@
 from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
 
-from mlguard.regression import check_regression
+from mlguard.regression import check_regression, load_model
 
 
 class TestCheckRegression:
@@ -31,7 +31,7 @@ class TestCheckRegression:
 
     def test_regression_detected(self):
         model, X, y = self._make_model_and_data()
-        # fake a high baseline that current model can't match
+        # use a high baseline that current model can't match
         baseline = {"accuracy": 0.99, "f1": 0.99}
         results = check_regression(model, X, y, baseline, fail_pct=5.0)
         # model accuracy is around 0.85, so 0.99 -> 0.85 is >10% drop
@@ -46,3 +46,16 @@ class TestCheckRegression:
         # should only report on accuracy, skip f1
         assert len(results) == 1
         assert results[0].metric == "accuracy"
+
+
+def test_pytorch_model_files_raise_clear_unsupported_error(tmp_path):
+    model_path = tmp_path / "model.pt"
+    model_path.write_bytes(b"not a tested mlguard model")
+
+    try:
+        load_model(model_path)
+    except ValueError as exc:
+        assert "PyTorch" in str(exc)
+        assert "not supported" in str(exc)
+    else:
+        raise AssertionError("Expected .pt model loading to be rejected")

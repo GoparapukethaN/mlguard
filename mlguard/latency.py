@@ -33,8 +33,8 @@ def check_latency(
 ) -> LatencyResult:
     """Time n_runs single-sample predictions and check against baseline.
 
-    Uses single-sample predictions because that's the production pattern
-    for most real-time serving. Batch latency is a different thing.
+    Uses single-sample predictions to approximate request/response serving.
+    Batch latency is a different check.
     """
     if len(X) == 0:
         raise ValueError("X is empty, need at least 1 sample for latency check")

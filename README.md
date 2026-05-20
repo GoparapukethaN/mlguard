@@ -31,6 +31,12 @@ mlguard baseline --model model.pkl --data reference.csv --target label
 mlguard check --model model.pkl --ref reference.csv --current new_data.csv --target label
 ```
 
+`mlguard check` fails fast when the baseline file is missing. If you intentionally want
+a drift-only run while bootstrapping a baseline, pass `--allow-missing-baseline`.
+
+Model files are loaded as local joblib/pickle-style artifacts. Only run MLGuard against
+trusted model files that you created or reviewed.
+
 Output:
 ```
 mlguard — pre-deployment safety checks
@@ -90,7 +96,7 @@ Times 100 single-sample predictions and compares p95 latency against the baselin
 
 ## GitHub Actions
 
-Add to your deployment workflow:
+You can run the CLI directly in a deployment workflow:
 
 ```yaml
 - name: ML safety check
@@ -108,6 +114,16 @@ The exit code blocks the pipeline on FAIL.
 The included composite action accepts custom Markdown/JSON output paths and uploads both
 reports as a single `mlguard-reports` artifact.
 
+```yaml
+- uses: GoparapukethaN/mlguard/action@main
+  with:
+    model-path: ./models/model.pkl
+    reference-data: ./data/reference.csv
+    current-data: ./data/current.csv
+    baseline-path: ./mlguard_baseline.json
+    target-column: target
+```
+
 ## Example
 
 ```bash
@@ -122,11 +138,12 @@ python examples/sklearn_example.py
 make verify
 ```
 
-Current local verification: `ruff` clean, `20 passed`, and the sklearn example produces
-Markdown and JSON release-gate reports when drift and performance regression are
+Current local verification: `ruff` clean, `24 passed`, and the sklearn example produces
+Markdown and JSON release-gate reports with summary counts when drift and performance regression are
 simulated.
 
 Sample report: [docs/example-report.md](docs/example-report.md)
+Verification checklist: [docs/verification.md](docs/verification.md)
 
 ## Running tests
 
@@ -139,6 +156,9 @@ pytest tests/ -v
 
 - Tested with sklearn-style estimators; other model wrappers can work if they expose
   `.predict()`
+- PyTorch `.pt`/`.pth` files are not supported yet; adding that should include a tested
+  adapter from tensor inputs to model outputs
+- Model deserialization is for trusted local artifacts only
 - PSI needs at least 10 samples per feature to be meaningful
 - Latency check measures single-sample prediction time, not batched
 - No GPU-specific latency profiling (CPU only for now)

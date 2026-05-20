@@ -1,8 +1,9 @@
 """Data drift detection using Population Stability Index (PSI).
 
 PSI compares two distributions by binning values and measuring how much
-the distribution has shifted. It's the standard metric in credit risk
-and has held up well for ML feature monitoring too.
+the distribution has shifted. It is a simple, explainable check for tabular
+feature drift and works well as a release-gate signal when paired with
+performance and latency checks.
 
 Interpretation:
   PSI < 0.1  → no significant drift
