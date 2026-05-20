@@ -22,6 +22,18 @@ inputs:
     description: "classification or regression"
     required: false
     default: "classification"
+  output-path:
+    description: "Path for the Markdown report"
+    required: false
+    default: "./mlguard_report.md"
+  json-output-path:
+    description: "Path for the JSON report"
+    required: false
+    default: "./mlguard_report.json"
+  latency-runs:
+    description: "Number of single-sample predictions for latency measurement"
+    required: false
+    default: "100"
 runs:
   using: "composite"
   steps:
@@ -38,12 +50,16 @@ runs:
           --baseline-path "${{ inputs.baseline-path }}" \
           --target "${{ inputs.target-column }}" \
           --task "${{ inputs.task-type }}" \
-          --output ./mlguard_report.md
+          --output "${{ inputs.output-path }}" \
+          --json-output "${{ inputs.json-output-path }}" \
+          --latency-runs "${{ inputs.latency-runs }}"
       shell: bash
 
-    - name: Upload report
+    - name: Upload reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: mlguard-report
-        path: ./mlguard_report.md
+        name: mlguard-reports
+        path: |
+          ${{ inputs.output-path }}
+          ${{ inputs.json-output-path }}

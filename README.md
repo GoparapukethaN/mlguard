@@ -105,6 +105,9 @@ Add to your deployment workflow:
 
 The exit code blocks the pipeline on FAIL.
 
+The included composite action accepts custom Markdown/JSON output paths and uploads both
+reports as a single `mlguard-reports` artifact.
+
 ## Example
 
 ```bash
@@ -119,7 +122,7 @@ python examples/sklearn_example.py
 make verify
 ```
 
-Current local verification: `ruff` clean, `19 passed`, and the sklearn example produces
+Current local verification: `ruff` clean, `20 passed`, and the sklearn example produces
 Markdown and JSON release-gate reports when drift and performance regression are
 simulated.
 
