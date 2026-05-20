@@ -2,7 +2,7 @@ name: "MLGuard Check"
 description: "Pre-deployment safety checks for ML models"
 inputs:
   model-path:
-    description: "Path to the model file (.pkl, .joblib, .pt)"
+    description: "Path to a trusted sklearn-style model file (.pkl or .joblib)"
     required: true
   reference-data:
     description: "Path to reference dataset CSV"

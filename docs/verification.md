@@ -15,7 +15,7 @@ make verify
 
 Current local result from 2026-05-20:
 
-- `24 passed`
+- `25 passed`
 - `ruff` clean
 - sklearn example produced Markdown and JSON reports
 - JSON report includes machine-readable summary counts
@@ -32,6 +32,7 @@ The public CLI behavior covered by tests includes:
 - `--allow-missing-baseline` is explicit drift-only mode
 - JSON reports include summary counts for failed and warned checks
 - PyTorch `.pt`/`.pth` artifacts are rejected with a clear unsupported-model message
+- the composite action does not advertise unsupported PyTorch artifacts
 
 ## Trust Boundary
 
