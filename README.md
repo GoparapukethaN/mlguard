@@ -138,7 +138,7 @@ python examples/sklearn_example.py
 make verify
 ```
 
-Current local verification: `ruff` clean, `25 passed`, and the sklearn example produces
+Current local verification: `ruff` clean, `26 passed`, and the sklearn example produces
 Markdown and JSON release-gate reports with summary counts when drift and performance regression are
 simulated.
 

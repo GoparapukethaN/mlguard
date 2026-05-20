@@ -10,6 +10,16 @@ from mlguard.cli import app
 runner = CliRunner()
 
 
+def test_cli_help_does_not_advertise_unsupported_torch_artifacts() -> None:
+    result = runner.invoke(app, ["check", "--help"])
+
+    assert result.exit_code == 0
+    assert ".pt" not in result.output
+    assert ".pth" not in result.output
+    assert ".pkl" in result.output
+    assert ".joblib" in result.output
+
+
 def _write_model_and_data(tmp_path: Path) -> tuple[Path, Path, Path]:
     data = pd.DataFrame(
         {

@@ -22,7 +22,7 @@ console = Console()
 
 @app.command()
 def check(
-    model: str = typer.Option(..., help="Path to model file (.pkl, .joblib, .pt)"),
+    model: str = typer.Option(..., help="Path to trusted sklearn-style model file (.pkl, .joblib)"),
     ref: str = typer.Option(..., help="Path to reference dataset (CSV)"),
     current: str = typer.Option(..., help="Path to current dataset (CSV)"),
     baseline_path: str = typer.Option(
