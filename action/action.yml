@@ -1,5 +1,5 @@
 name: "MLGuard Check"
-description: "Pre-deployment safety checks for ML models"
+description: "Pre-deployment release-gate checks for ML model drift, regression, and latency"
 inputs:
   model-path:
     description: "Path to a trusted sklearn-style model file (.pkl or .joblib)"

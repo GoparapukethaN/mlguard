@@ -1,6 +1,6 @@
 # MLGuard
 
-Pre-deployment safety checks for ML models. Three checks, one command, pass or fail.
+Pre-deployment release-gate checks for ML models. Three checks, one command, pass or fail.
 
 ## Why
 
@@ -39,7 +39,7 @@ trusted model files that you created or reviewed.
 
 Output:
 ```
-mlguard — pre-deployment safety checks
+mlguard — pre-deployment release-gate checks
 
   Reference: 300 rows, Current: 300 rows
   Model: model.pkl
@@ -99,7 +99,7 @@ Times 100 single-sample predictions and compares p95 latency against the baselin
 You can run the CLI directly in a deployment workflow:
 
 ```yaml
-- name: ML safety check
+- name: ML release gate
   run: |
     pip install -e .
     mlguard check \

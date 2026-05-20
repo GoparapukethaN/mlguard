@@ -16,7 +16,7 @@ from mlguard.regression import check_regression, load_model
 from mlguard.report import generate_json_report, generate_report
 from mlguard.verdict import decide
 
-app = typer.Typer(help="mlguard: pre-deployment safety checks for ML models.")
+app = typer.Typer(help="mlguard: pre-deployment release-gate checks for ML models.")
 console = Console()
 
 
@@ -42,7 +42,7 @@ def check(
     ),
 ):
     """Run all three checks: drift, regression, latency."""
-    console.print("\n[bold]mlguard[/bold] — pre-deployment safety checks\n")
+    console.print("\n[bold]mlguard[/bold] — pre-deployment release-gate checks\n")
 
     # load data
     ref_df = pd.read_csv(ref)
