@@ -56,9 +56,11 @@ mlguard — pre-deployment safety checks
   FAIL — 3 feature(s) with significant drift; performance regression detected
 
   Report saved to ./mlguard_report.md
+  JSON report saved to ./mlguard_report.json
 ```
 
-Exit code 1 on FAIL, 0 on PASS/WARN. Wire it into CI and you're done.
+Exit code 1 on FAIL, 0 on PASS/WARN. The Markdown report is useful for review, and the
+JSON report is useful for CI annotations, dashboards, or release records.
 
 ## The three checks
 
@@ -117,8 +119,9 @@ python examples/sklearn_example.py
 make verify
 ```
 
-Current local verification: `ruff` clean, `17 passed`, and the sklearn example produces
-a failing release-gate report when drift and performance regression are simulated.
+Current local verification: `ruff` clean, `19 passed`, and the sklearn example produces
+Markdown and JSON release-gate reports when drift and performance regression are
+simulated.
 
 Sample report: [docs/example-report.md](docs/example-report.md)
 

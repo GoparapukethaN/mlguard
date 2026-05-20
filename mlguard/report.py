@@ -1,8 +1,10 @@
-"""Generate a markdown report from check results."""
+"""Generate markdown and JSON reports from check results."""
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+from typing import Any
 
 from mlguard.drift import DriftResult
 from mlguard.latency import LatencyResult
@@ -82,3 +84,59 @@ def generate_report(
         Path(output_path).write_text(report, encoding="utf-8")
 
     return report
+
+
+def generate_json_report(
+    verdict: Verdict,
+    drift_results: list[DriftResult],
+    regression_results: list[RegressionResult],
+    latency_result: LatencyResult | None,
+    output_path: str | None = None,
+) -> dict[str, Any]:
+    """Generate a machine-readable release-gate report."""
+    payload: dict[str, Any] = {
+        "verdict": {
+            "overall": verdict.overall,
+            "summary": verdict.summary,
+            "drift_status": verdict.drift_status,
+            "regression_status": verdict.regression_status,
+            "latency_status": verdict.latency_status,
+        },
+        "data_drift": [
+            {
+                "feature": result.feature,
+                "psi": result.psi,
+                "status": result.status,
+            }
+            for result in drift_results
+        ],
+        "performance_regression": [
+            {
+                "metric": result.metric,
+                "baseline_value": result.baseline_value,
+                "current_value": result.current_value,
+                "change_pct": result.change_pct,
+                "status": result.status,
+            }
+            for result in regression_results
+        ],
+        "latency": _latency_payload(latency_result),
+    }
+
+    if output_path:
+        Path(output_path).write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+    return payload
+
+
+def _latency_payload(result: LatencyResult | None) -> dict[str, float | str] | None:
+    if result is None:
+        return None
+    return {
+        "p50_ms": result.p50_ms,
+        "p95_ms": result.p95_ms,
+        "p99_ms": result.p99_ms,
+        "baseline_p95_ms": result.baseline_p95_ms,
+        "change_pct": result.change_pct,
+        "status": result.status,
+    }

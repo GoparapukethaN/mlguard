@@ -13,7 +13,7 @@ from mlguard.baseline import load_baseline, save_baseline
 from mlguard.drift import check_drift
 from mlguard.latency import check_latency
 from mlguard.regression import check_regression, load_model
-from mlguard.report import generate_report
+from mlguard.report import generate_json_report, generate_report
 from mlguard.verdict import decide
 
 app = typer.Typer(help="mlguard: pre-deployment safety checks for ML models.")
@@ -31,6 +31,10 @@ def check(
     target: str = typer.Option("target", help="Name of target column in CSV"),
     task: str = typer.Option("classification", help="Task type: classification or regression"),
     output: str = typer.Option("./mlguard_report.md", help="Output report path"),
+    json_output: str | None = typer.Option(
+        None,
+        help="Output JSON report path. Defaults to the markdown path with .json suffix.",
+    ),
     latency_runs: int = typer.Option(100, help="Number of inference calls for latency check"),
 ):
     """Run all three checks: drift, regression, latency."""
@@ -106,8 +110,15 @@ def check(
         latency_result.status,
     )
 
-    generate_report(verdict, drift_results, regression_results,
-                             latency_result, output)
+    generate_report(verdict, drift_results, regression_results, latency_result, output)
+    json_report_path = json_output or str(Path(output).with_suffix(".json"))
+    generate_json_report(
+        verdict,
+        drift_results,
+        regression_results,
+        latency_result,
+        json_report_path,
+    )
 
     if verdict.overall == "PASS":
         console.print(f"\n  [bold green]{verdict.overall}[/bold green] — {verdict.summary}")
@@ -117,6 +128,7 @@ def check(
         console.print(f"\n  [bold red]{verdict.overall}[/bold red] — {verdict.summary}")
 
     console.print(f"  Report saved to {output}\n")
+    console.print(f"  JSON report saved to {json_report_path}\n")
 
     if verdict.overall == "FAIL":
         raise typer.Exit(1)

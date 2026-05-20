@@ -14,7 +14,7 @@ from mlguard.baseline import save_baseline
 from mlguard.drift import check_drift
 from mlguard.latency import check_latency
 from mlguard.regression import check_regression
-from mlguard.report import generate_report
+from mlguard.report import generate_json_report, generate_report
 from mlguard.verdict import decide
 
 
@@ -106,7 +106,12 @@ def main():
         verdict, drift_results, regression_results,
         latency_result, "/tmp/mlguard_report.md"
     )
+    generate_json_report(
+        verdict, drift_results, regression_results,
+        latency_result, "/tmp/mlguard_report.json"
+    )
     print("\n   Report saved to /tmp/mlguard_report.md")
+    print("   JSON report saved to /tmp/mlguard_report.json")
 
 
 if __name__ == "__main__":

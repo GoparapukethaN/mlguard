@@ -10,6 +10,11 @@ The example trains a small RandomForest on synthetic data, records baseline perf
 then shifts several features to simulate drift before running the release gate. It is a
 demo artifact, not a claim about a production model.
 
+The example writes both:
+
+- `/tmp/mlguard_report.md` for human review
+- `/tmp/mlguard_report.json` for automation, dashboards, or release records
+
 ## Latest Local Example
 
 ```text
@@ -44,3 +49,25 @@ VERDICT: FAIL
 The example also checks p95 latency against the baseline. Exact latency values depend on
 the local machine, so this sample treats latency as directional evidence rather than a
 portable benchmark.
+
+## JSON Report Shape
+
+```json
+{
+  "verdict": {
+    "overall": "FAIL",
+    "summary": "3 feature(s) with significant drift; performance regression detected",
+    "drift_status": "fail",
+    "regression_status": "fail",
+    "latency_status": "pass"
+  },
+  "data_drift": [],
+  "performance_regression": [],
+  "latency": {
+    "p95_ms": 1.49,
+    "baseline_p95_ms": 1.54,
+    "change_pct": -3.6,
+    "status": "pass"
+  }
+}
+```
