@@ -144,6 +144,7 @@ simulated.
 
 Sample report: [docs/example-report.md](docs/example-report.md)
 Verification checklist: [docs/verification.md](docs/verification.md)
+Case study: [docs/case-study.md](docs/case-study.md)
 
 ## Running tests
 
